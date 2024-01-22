@@ -1,0 +1,157 @@
+Roman  to Integer
+Roman numerals are represented by seven different symbols: I, V, X, L, C, D and M.
+Example 1:
+Input: s = "III"
+Output: 3
+Explanation: III = 3.
+
+int romanToInt(char* s) {
+   int result = 0;
+
+    while (*s) {
+        switch (*s) {
+            case 'I':
+                if (*(s + 1) == 'V' || *(s + 1) == 'X') {
+                    result -= 1;
+                } else {
+                    result += 1;
+                }
+                break;
+            case 'V':
+                result += 5;
+                break;
+            case 'X':
+                if (*(s + 1) == 'L' || *(s + 1) == 'C') {
+                    result -= 10;
+                } else {
+                    result += 10;
+                }
+                break;
+            case 'L':
+                result += 50;
+                break;
+            case 'C':
+                if (*(s + 1) == 'D' || *(s + 1) == 'M') {
+                    result -= 100;
+                } else {
+                    result += 100;
+                }
+                break;
+            case 'D':
+                result += 500;
+                break;
+            case 'M':
+                result += 1000;
+                break;
+            default:
+                printf("Invalid Roman numeral character: %c\n", *s);
+                return -1; // Error case
+        }
+
+        s++;
+    }
+
+    return result;
+}
+=====================================================================================
+
+Write a function to find the longest common prefix string amongst an array of strings. If there is no common prefix, return an empty string "".
+Example 1:
+Input: strs = ["flower","flow","flight"]
+Output: "fl"
+
+char* longestCommonPrefix(char** strs, int strsSize) {
+  if (strsSize == 0) {
+        char* result = (char*)malloc(1);
+        result[0] = '\0';
+        return result;
+    }
+    // Find the minimum length of strings in the array
+    int minLen = strlen(strs[0]);
+    for (int i = 1; i < strsSize; i++) {
+        int len = strlen(strs[i]);
+        minLen = (len < minLen) ? len : minLen;
+    }
+    // Allocate memory for the result string
+    char* result = (char*)malloc(minLen + 1);
+    // Iterate over characters in the first string
+    for (int i = 0; i < minLen; i++) {
+        char currentChar = strs[0][i];
+
+        // Check if the character is common to all strings
+        for (int j = 1; j < strsSize; j++) {
+            if (strs[j][i] != currentChar) {
+                // If characters differ, set the result and return
+                result[i] = '\0';
+                return result;
+            }
+        }
+        // If the character is common, append it to the result
+        result[i] = currentChar;
+    }
+    // Null-terminate the result string
+    result[minLen] = '\0';
+
+    return result;
+}
+===========================================================================================
+Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
+An input string is valid if:
+Open brackets must be closed by the same type of brackets.
+Open brackets must be closed in the correct order.
+Every close bracket has a corresponding open bracket of the same type.
+
+bool isValid(char* s) {
+    int size = strlen(s);
+    char stack[size];
+    int top = -1;
+
+    for (int i = 0; s[i] != '\0'; i++) {
+        if (s[i] == '(' || s[i] == '{' || s[i] == '[') {
+            // Push opening brackets onto the stack
+            stack[++top] = s[i];
+        } else {
+            // Check if the stack is empty or the brackets do not match
+            if (top == -1 || 
+               (s[i] == ')' && stack[top] != '(') || (s[i] == '}' && stack[top] != '{') || (s[i] == ']' && stack[top] != '[')) {
+                return false; // Invalid
+            }
+            top--; // Pop matching opening bracket
+        }
+    }
+    // Check if there are any remaining opening brackets
+    return top == -1;
+}
+==============================================================================================
+
+You are given the heads of two sorted linked lists list1 and list2. Merge the two lists into one sorted list. The list should be made by splicing together the nodes of the first two lists.Return the head of the merged linked list.
+Example:
+Input: list1 = [1,2,4], list2 = [1,3,4]
+Output: [1,1,2,3,4,4]
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     struct ListNode *next;
+ * };
+ */
+struct ListNode* mergeTwoLists(struct ListNode* list1, struct ListNode* list2) {
+    if(list1 == NULL)
+        return list2;
+    else if(list2 == NULL)
+        return list1;
+    struct ListNode* result = NULL;
+    if (list1->val <= list2->val) {
+        result = list1;
+        result -> next = mergeTwoLists (list1->next, list2);
+    }
+   else {
+        result = list2;
+        result -> next = mergeTwoLists (list1, list2->next);
+    }
+    return result;
+       
+        
+}
+=====================================================================================================
